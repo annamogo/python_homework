@@ -67,6 +67,18 @@ class Convert(object):
 
         return res_img
 
+    def mono_to_bin(self, thresh=128):
+        img = self.img.img
+
+        b = lambda x: 255 if x>thresh else 0
+        res = np.array([[b(p) for p in row]for row in img]).astype(np.uint8)
+
+        res_img = ImgBinary()
+        res_img.store(res)
+
+        return res_img
+
+
 
      
         
