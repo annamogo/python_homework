@@ -110,12 +110,6 @@ def mono_to_bin():
    img = pr.mono_to_bin(thresh)
    update_image()
 
-def bin_to_mono():
-   global img
-
-   pr = Convert(img)
-   img = pr.bin_to_mono()
-   update_image()   
 
    
 ### DO NOT TOUCH THIS ###
@@ -155,12 +149,13 @@ menubar.add_cascade(label="File", menu=filemenu)
 # второй выпадающий список
 editmenu = Menu(menubar, tearoff=0)
 editmenu.add_command(label="Nothing", command=nothing)
+editmenu.add_command(label="Binary to binary (no change)", command=nothing)
 editmenu.add_command(label="StatCorrection-1D", command=stat_correction)
 editmenu.add_command(label="StatCorrection-3D", command=stat_correction_3D)
 editmenu.add_command(label="Convert RGB to gray", command=color_to_mono)
 editmenu.add_command(label="Convert gray to RGB", command=mono_to_color)
 editmenu.add_command(label="Convert gray to binary", command=mono_to_bin)
-editmenu.add_command(label="Convert binary to gray", command=bin_to_mono)
+#editmenu.add_command(label="Convert binary to gray", command=bin_to_mono)
 #editmenu.add_command(label="Convert gray to RGB", command=mono_to_color)
 #editmenu.add_command(label="Convert gray to RGB", command=mono_to_color)
 menubar.add_cascade(label="Convert", menu=editmenu)
