@@ -67,78 +67,10 @@ class Convert(object):
 
         return res_img
 
-    def mono_to_bin(self, thresh=128):
-        img = self.img.img
 
-        b = lambda x: 255 if x>thresh else 0
-        res = np.array([[b(p) for p in row]for row in img]).astype(np.uint8)
-
-        res_img = ImgBinary()
-        res_img.store(res)
-
-        return res_img
-
-    def bin_to_mono(self):
-        img = self.img.img
-
-        res_x = np.zeros(img.shape)
-        res = np.zeros(img.shape)
+     
         
-        for i in range(img.shape[0]):
-            if img[i,0] == 0:
-                res_x[i,0] = 0
-            else:
-                res_x[i,0] = img.shape[0] + img.shape[1]
 
-            for j in range(1,img.shape[1]):
-                if img[i,j] == 0:
-                    res_x[i,j] = 0
-                else:
-                    res_x[i,j] = res_x[i,j-1]+1
-
-            for j in reversed(range(img.shape[1]-1)):
-                if res_x[i,j+1] < res_x[i,j]:
-                    res_x[i,j] = 1 + res_x[i,j+1]
-
-        print(res_x)
-        norma = lambda x, y, z: (x-z)**2 + res_x[z,y]**2
-        sep = lambda x, y, z: (z**2 - y**2 + res_x[z,x]**2 - res_x[y,x]**2)//(2*(z - y))
-        
-        #second part, colomns
-        for j in range(img.shape[1]):
-            q = 0
-            s = [0]
-            t = [0]
-            for u in range(1,img.shape[0]):
-                while (q>=0)and(norma(t[q],j,s[q])>norma(t[q],j,u)):
-                    q = q-1
-                    del s[-1]
-                    del t[-1]
-                if q<0:
-                    q = 0
-                    s.append(u)
-                    t.append(0)
-                else:
-                    w = 1 + sep(j,s[q],u)
-                    if w <= img.shape[0]:
-                        q = q + 1
-                        s.append(u)
-                        t.append(w)
-
-            for u in reversed(range(img.shape[0])):
-                res[u,j] = norma(u,j,s[q])
-                if u == t[q]:
-                    q = q - 1
-
-        print(np.array(t).astype(np.uint32))
-        res = np.array(res)
-        print(res)
-        res_img = ImgGray()
-        res_img.store((res/np.max(res)*255).astype(np.uint8))
-
-        return res_img
-                
-            
         
     
 
