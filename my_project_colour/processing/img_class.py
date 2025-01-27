@@ -23,16 +23,23 @@ class ImgBinary(Img):
         self.thresh = 0
 
     def read(self, path):
-        img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-        thresh_val = 128
-        max_val = 255
-        self.thresh, self.img = cv2.threshold(img, thresh_val, max_val, cv2.THRESH_BINARY)
+        try:
+            img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        except:
+            raise Exception("Can't read this image.")
+        else:
+            thresh_val = 128
+            max_val = 255
+            self.thresh, self.img = cv2.threshold(img, thresh_val, max_val, cv2.THRESH_BINARY)
 
 
 
 class ImgGray(Img):    
     def read(self, path):
-        self.img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        try:
+            self.img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        except:
+            raise Exception("Can't read this image.")
 
     def get_hist(self):
         num = self.img.shape[0] * self.img.shape[1]
@@ -44,9 +51,12 @@ class ImgGray(Img):
 
 class ImgRGB(Img):
     def read(self, path):
-        self.img = cv2.imread(path, cv2.IMREAD_COLOR)
-        self.img = np.flip(self.img, axis=-1)
-        print(self.img.shape)
+        try:
+            self.img = cv2.imread(path, cv2.IMREAD_COLOR)
+            self.img = np.flip(self.img, axis=-1)
+        except:
+            raise Exception("Can't read this image.")
+
 
     def get_hist(self):
         num = self.img.shape[0] * self.img.shape[1]
