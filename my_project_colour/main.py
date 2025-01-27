@@ -1,11 +1,11 @@
 import cv2
 import tkinter
 from tkinter import *
+from tkinter.messagebox import showerror
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.simpledialog import askfloat, askinteger
 from processing.filter import *
 from processing.img_class import Img, ImgBinary, ImgGray, ImgRGB
-from processing.histogram import Hist
 import numpy as np
 from PIL import Image, ImageTk
 
@@ -18,8 +18,12 @@ def read_bin_image_menu():
                           ) 
 
    img = ImgBinary()                     
-   img.read(name)
-   update_image()
+   try:
+      img.read(name)
+   except:
+      showerror(title="Error", message="cv2 could not read an image.")
+   else:
+      update_image()
 
 def read_gray_image_menu():
    global img, image, label_image, photo, root, image_label
@@ -28,9 +32,13 @@ def read_gray_image_menu():
                           title="Choose an image."
                           ) 
 
-   img = ImgGray()                     
-   img.read(name)
-   update_image()
+   img = ImgGray()
+   try:
+      img.read(name)
+   except:
+      showerror(title="Error", message="cv2 could not read an image.")
+   else:
+      update_image()
 
 def read_RGB_image_menu():
    global img, image, label_image, photo, root, image_label
@@ -40,8 +48,12 @@ def read_RGB_image_menu():
                           ) 
 
    img = ImgRGB()                     
-   img.read(name)
-   update_image()
+   try:
+      img.read(name)
+   except:
+      showerror(title="Error", message="cv2 could not read an image.")
+   else:
+      update_image()
 
 def save_image_menu():
    global img
@@ -64,11 +76,13 @@ def stat_correction():
    hist_img.read(name)
    hist = hist_img.get_hist()
 
-   old_img = img
-   pr = Convert(old_img)
-   img = pr.stat_correction(hist)
-   print(img.img.shape)
-   update_image()
+   pr = Convert(img)
+   try:
+      img = pr.stat_correction(hist)
+      update_image()
+   except:
+      showerror(title="Error", message="could not process data type.")
+      
 
 def stat_correction_3D():
    global img
@@ -81,24 +95,32 @@ def stat_correction_3D():
    hist_img.read(name)
    hist = hist_img.get_hist()
 
-   old_img = img
-   pr = Convert(old_img)
-   img = pr.stat_correction_3D(hist)
-   update_image()
+   pr = Convert(img)
+   try:
+      img = pr.stat_correction_3D(hist)
+      update_image()
+   except:
+      showerror(title="Error", message="could not process data type.")
 
 def color_to_mono():
    global img
 
    pr = Convert(img)
-   img = pr.color_to_mono()
-   update_image()
+   try:
+      img = pr.color_to_mono()
+      update_image()
+   except:
+      showerror(title="Error", message="could not process data type.")
 
 def mono_to_color():
    global img
 
    pr = Convert(img)
-   img = pr.mono_to_color()
-   update_image()
+   try:
+      img = pr.mono_to_color()
+      update_image()
+   except:
+      showerror(title="Error", message="could not process data type.")
 
 def mono_to_bin():
    global img
@@ -107,9 +129,23 @@ def mono_to_bin():
                        prompt="enter a value from 0 to 255")
 
    pr = Convert(img)
-   img = pr.mono_to_bin(thresh)
-   update_image()
+   try:
+      img = pr.mono_to_bin(thresh)
+      update_image()
+   except:
+      showerror(title="Error", message="could not process data type.")
 
+def bin_to_mono():
+   global img
+
+   pr = Convert(img)
+   try:
+      img = pr.bin_to_mono(thresh)
+      update_image()
+   except:
+      showerror(title="Error", message="could not process data type.")
+
+  
 
    
 ### DO NOT TOUCH THIS ###
@@ -149,15 +185,12 @@ menubar.add_cascade(label="File", menu=filemenu)
 # второй выпадающий список
 editmenu = Menu(menubar, tearoff=0)
 editmenu.add_command(label="Nothing", command=nothing)
-editmenu.add_command(label="Binary to binary (no change)", command=nothing)
 editmenu.add_command(label="StatCorrection-1D", command=stat_correction)
 editmenu.add_command(label="StatCorrection-3D", command=stat_correction_3D)
 editmenu.add_command(label="Convert RGB to gray", command=color_to_mono)
 editmenu.add_command(label="Convert gray to RGB", command=mono_to_color)
 editmenu.add_command(label="Convert gray to binary", command=mono_to_bin)
-#editmenu.add_command(label="Convert binary to gray", command=bin_to_mono)
-#editmenu.add_command(label="Convert gray to RGB", command=mono_to_color)
-#editmenu.add_command(label="Convert gray to RGB", command=mono_to_color)
+editmenu.add_command(label="Convert binary to gray", command=bin_to_mono)
 menubar.add_cascade(label="Convert", menu=editmenu)
 
 
